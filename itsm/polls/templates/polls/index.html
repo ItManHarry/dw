@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Polls Index Page</title>
+</head>
+<body>
+{%if latest_questions%}
+    <ul>
+        {%for q in latest_questions%}
+        {#<li><a href="/polls/{{q.id}}">{{q.question_text}}</a> </li>#}
+        <li><a href="{%url 'polls:detail' q.id%}">{{q.question_text}}</a> </li>
+        {%endfor%}
+    </ul>
+{%else%}
+    <p>No polls are available!</p>
+{%endif%}
+</body>
+</html>
