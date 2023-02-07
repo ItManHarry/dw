@@ -5,12 +5,12 @@
     <title>Poll detail</title>
 </head>
 <body>
-{{question}}
+{{bizquestion}}
 <ul>
-    {%for c in question.bizchoice_set.all%}
+    {%for c in bizquestion.bizchoice_set.all%}
         <li>{{c.choice_text}} -- {{c.votes}} vote {{c.votes|pluralize}}</li>
     {%endfor%}
 </ul>
-<a href="{%url 'polls:detail' question.id%}">Vote Again?</a>
+<a href="{%url 'polls:detail' bizquestion.id%}">Vote Again?</a>
 </body>
 </html>

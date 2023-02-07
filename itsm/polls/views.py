@@ -73,6 +73,7 @@ class IndexView(generic.ListView):
     context_object_name = 'latest_questions'
 
     def get_queryset(self):
+        print(reverse('polls:vote', args=(8, )))
         return BizQuestion.objects.order_by('-pub_date')[:5]
 
 class DetailView(generic.DetailView):

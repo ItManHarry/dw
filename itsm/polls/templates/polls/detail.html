@@ -5,15 +5,15 @@
     <title>Poll detail</title>
 </head>
 <body>
-<form method="post" action="{%url 'polls:vote' question.id%}">
+<form method="post" action="{%url 'polls:vote' bizquestion.id%}">
     {%csrf_token%}
     <fieldset>
-        <legend><h1>Question : {{question}}</h1></legend>
+        <legend><h1>Question : {{bizquestion}}</h1></legend>
     {%if error_message%}
         <p><strong>{{error_message}}</strong></p>
     {%endif%}
     <h2>Choices : </h2>
-    {%for c in question.bizchoice_set.all%}
+    {%for c in bizquestion.bizchoice_set.all%}
         <input type="radio" name="choice" id="choice{{forloop.counter}}" value="{{c.id}}">
         <label for="choice{{forloop.counter}}">{{c.choice_text}}</label><br>
     {%endfor%}
