@@ -74,7 +74,7 @@ class IndexView(generic.ListView):
 
     def get_queryset(self):
         print(reverse('polls:vote', args=(8, )))
-        return BizQuestion.objects.order_by('-pub_date')[:5]
+        return BizQuestion.objects.filter(pub_date__lte=timezone.now()).order_by('-pub_date')[:5]
 
 class DetailView(generic.DetailView):
     model = BizQuestion

@@ -1,19 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
+{%load static%}
 <head>
     <meta charset="UTF-8">
     <title>Polls Index Page</title>
+    <link rel="icon" type="image/x-icon" href="{%static 'polls/images/icon/sys.ico'%}">
+    <link rel="stylesheet" type="text/css" href="{%static 'polls/css/bootstrap.min.css'%}">
+    <link rel="stylesheet" type="text/css" href="{%static 'polls/css/bootstrap-icons.css'%}">
+    <link rel="stylesheet" type="text/css" href="{%static 'polls/css/jquery-confirm.min.css'%}">
 </head>
-<body>
-{%if latest_questions%}
-    <ul>
-        {%for q in latest_questions%}
-        {#<li><a href="/polls/{{q.id}}">{{q.question_text}}</a> </li>#}
-        <li><a href="{%url 'polls:detail' q.id%}">{{q.question_text}}</a> </li>
-        {%endfor%}
-    </ul>
-{%else%}
-    <p>No polls are available!</p>
-{%endif%}
+<body style="background: white url('{%static 'polls/images/bg/1.jpg'%}') no-repeat;margin-top:50px;">
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+            {%if latest_questions%}
+                <ul class="list-group">
+                    {%for q in latest_questions%}
+                    {#<li><a href="/polls/{{q.id}}">{{q.question_text}}</a> </li>#}
+                    <li class="list-group-item"><a href="{%url 'polls:detail' q.id%}">{{q.question_text}}</a> </li>
+                    {%endfor%}
+                </ul>
+            {%else%}
+                <p>No polls are available!</p>
+            {%endif%}
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="{%static 'polls/js/jquery-3.6.1.min.js'%}"></script>
+<script type="text/javascript" src="{%static 'polls/js/bootstrap.bundle.min.js'%}"></script>
+<script type="text/javascript" src="{%static 'polls/js/jquery-confirm.min.js'%}"></script>
+<script>
+    $(function(){
+        alert('OK')
+    })
+</script>
 </body>
 </html>
