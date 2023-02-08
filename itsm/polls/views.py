@@ -45,7 +45,7 @@ def vote(request, question_id):
     try:
         choice = question.bizchoice_set.get(pk=request.POST['choice'])
     except (KeyError, BizChoice.DoesNotExist):
-        return render(request, 'polls/detail.html', {'question': question,
+        return render(request, 'polls/detail.html', {'bizquestion': question,
                                                      'error_message': 'You did not select a choice!'})
     else:
         '''

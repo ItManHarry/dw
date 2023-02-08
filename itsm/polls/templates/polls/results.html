@@ -1,16 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
+{%load static%}
 <head>
     <meta charset="UTF-8">
     <title>Poll detail</title>
+    <link rel="icon" type="image/x-icon" href="{%static 'polls/images/icon/sys.ico'%}">
+    <link rel="stylesheet" type="text/css" href="{%static 'polls/css/bootstrap.min.css'%}">
+    <link rel="stylesheet" type="text/css" href="{%static 'polls/css/bootstrap-icons.css'%}">
+    <link rel="stylesheet" type="text/css" href="{%static 'polls/css/jquery-confirm.min.css'%}">
 </head>
-<body>
-{{bizquestion}}
-<ul>
-    {%for c in bizquestion.bizchoice_set.all%}
-        <li>{{c.choice_text}} -- {{c.votes}} vote {{c.votes|pluralize}}</li>
-    {%endfor%}
-</ul>
-<a href="{%url 'polls:detail' bizquestion.id%}">Vote Again?</a>
+<body style="background: white url('{%static 'polls/images/bg/1.jpg'%}') no-repeat;margin-top:50px;">
+<div class="container">
+    <h3>{{bizquestion}}</h3>
+    <div class="row">
+        <div class="col">
+            <ul>
+                {%for c in bizquestion.bizchoice_set.all%}
+                    <li>{{c.choice_text}} -- {{c.votes}} vote {{c.votes|pluralize}}</li>
+                {%endfor%}
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <a class="btn btn-primary" href="{%url 'polls:detail' bizquestion.id%}">Vote Again?</a>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="{%static 'polls/js/jquery-3.6.1.min.js'%}"></script>
+<script type="text/javascript" src="{%static 'polls/js/bootstrap.bundle.min.js'%}"></script>
+<script type="text/javascript" src="{%static 'polls/js/jquery-confirm.min.js'%}"></script>
+<script>
+    $(function(){
+        //alert('OK')
+    })
+</script>
 </body>
 </html>
