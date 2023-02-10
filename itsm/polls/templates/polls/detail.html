@@ -26,7 +26,8 @@
             </div>
         {%endfor%}
         </fieldset><br>
-        <input type="submit" value="Vote" class="btn btn-danger">
+        <input type="submit" value="Vote" class="btn btn-danger">&nbsp;&nbsp;
+        <a class="btn btn-primary" href="{%url 'polls:index'%}">Back To List</a>
     </form>
 </div>
 <script type="text/javascript" src="{%static 'polls/js/jquery-3.6.1.min.js'%}"></script>

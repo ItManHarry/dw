@@ -25,3 +25,12 @@ class BizChoice(models.Model):
 
     def __str__(self):
         return self.choice_text
+class Log(models.Model):
+    id = models.CharField(max_length=32, primary_key=True)
+    question = models.ForeignKey(BizQuestion, on_delete=models.CASCADE)
+    choice = models.ForeignKey(BizChoice, on_delete=models.CASCADE)
+    log_date = models.DateTimeField('Choice time')
+    remark = models.TextField(null=True)
+
+    def __str__(self):
+        return self.remark
