@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'itsm.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'dwdb',
+        'NAME': 'dw',
         'USER': 'dw',
         'PASSWORD': 'Dw2023',
         'HOST': '127.0.0.1'

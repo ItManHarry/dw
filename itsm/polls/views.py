@@ -19,7 +19,7 @@ def index(request):
         print(request.GET['name'])
     except KeyError:
         print('None')
-    latest_questions = BizQuestion.objects.order_by('-pub_date')[:5]
+    latest_questions = Question.objects.order_by('-pub_date')[:5]
     out_put = ','.join([q.question_text for q in latest_questions])
     # return HttpResponse(out_put)
     context = {
@@ -32,19 +32,19 @@ def index(request):
     return render(request, 'polls/index.html', context)
 def detail(request, question_id):
     # try:
-    #     question = BizQuestion.objects.get(pk=question_id)
-    # except BizQuestion.DoesNotExist:
+    #     question = Question.objects.get(pk=question_id)
+    # except Question.DoesNotExist:
     #     raise Http404('Question does not exist!')
-    question = get_object_or_404(BizQuestion, pk=question_id)
+    question = get_object_or_404(Question, pk=question_id)
     return render(request, 'polls/detail.html', {'question': question})
 def results(request, question_id):
-    question = get_object_or_404(BizQuestion, pk=question_id)
+    question = get_object_or_404(Question, pk=question_id)
     return render(request, 'polls/results.html', {'question': question})
 def vote(request, question_id):
-    question = get_object_or_404(BizQuestion, pk=question_id)
+    question = get_object_or_404(Question, pk=question_id)
     try:
         choice = question.bizchoice_set.get(pk=request.POST['choice'])
-    except (KeyError, BizChoice.DoesNotExist):
+    except (KeyError, Choice.DoesNotExist):
         return render(request, 'polls/detail.html', {'bizquestion': question,
                                                      'error_message': 'You did not select a choice!'})
     else:
@@ -74,12 +74,12 @@ class IndexView(generic.ListView):
 
     def get_queryset(self):
         print(reverse('polls:vote', args=(8, )))
-        return BizQuestion.objects.filter(pub_date__lte=timezone.now()).order_by('-pub_date')[:5]
+        return Question.objects.filter(pub_date__lte=timezone.now()).order_by('-pub_date')[:5]
 
 class DetailView(generic.DetailView):
-    model = BizQuestion
+    model = Question
     template_name = 'polls/detail.html'
 
 class ResultView(generic.DetailView):
-    model = BizQuestion
+    model = Question
     template_name = 'polls/results.html'
