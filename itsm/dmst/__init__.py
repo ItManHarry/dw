@@ -1,0 +1,3 @@
+'''
+dmst - Django Model Study
+'''
