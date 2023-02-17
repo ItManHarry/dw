@@ -31,43 +31,6 @@ class Enum(models.Model):
 
     def __str__(self):
         return 'Enumeration code {}, name {}.'.format(self.code, self.name)
-class Department(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    active = models.BooleanField(default=True)
-    created_on = models.DateTimeField(auto_now=True)
-    created_by = models.CharField(max_length=32)
-    updated_on = models.DateTimeField(default=timezone.now)
-    updated_by = models.CharField(max_length=32)
-    code = models.CharField(max_length=24, unique=True)
-    name = models.CharField(max_length=128)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        db_table = 'biz_department'
-
-class Employee(models.Model):
-    class Meta:
-        db_table = 'biz_employee'
-    SHIRT_SIZES = (
-        ('S', 'Small'),
-        ('M', 'Medium'),
-        ('L', 'Large'),
-    )
-    id = models.CharField(max_length=32, primary_key=True)
-    active = models.BooleanField(default=True)
-    created_on = models.DateTimeField(auto_now=True)
-    created_by = models.CharField(max_length=32)
-    updated_on = models.DateTimeField(default=timezone.now)
-    updated_by = models.CharField(max_length=32)
-    code = models.CharField(max_length=24, unique=True)
-    name = models.CharField(max_length=128)
-    shirt_size = models.CharField(max_length=1, choices=SHIRT_SIZES)
-    department = models.ForeignKey(Department, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return 'Employee {}({}), shirt size {}.'.format(self.name, self.code, self.get_shirt_size_display())
 
 class  FieldsPractise(models.Model):
     class Meta:

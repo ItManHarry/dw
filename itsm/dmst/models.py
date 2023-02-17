@@ -43,7 +43,7 @@ class BaseModel(models.Model):
         locale_date_time = utc_date_time + off_set
         return locale_date_time
 '''
-Models of Many to One relationship
+Many to One
 '''
 class Factory(models.Model):
     name = models.CharField(max_length=256)
@@ -82,3 +82,39 @@ class Article(BaseModel):
 
     class Meta(BaseModel.Meta):
         db_table = 'biz_article'
+class Department(BaseModel):
+    code = models.CharField(max_length=24)
+    name = models.CharField(max_length=256)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True)
+    @property
+    def children(self):
+        return Department.objects.filter(parent_id=self.id)
+    def __str__(self):
+        return self.name
+    class Meta(BaseModel.Meta):
+        db_table = 'biz_department'
+'''
+Many to Many
+'''
+class Musician(BaseModel):
+    name = models.CharField(max_length=32)
+
+    def __str__(self):
+        return self.name
+    class Meta(BaseModel.Meta):
+        db_table = 'biz_musician'
+
+class Band(BaseModel):
+    name = models.CharField(max_length=128)
+    members = models.ManyToManyField(Musician, through='BandShip')
+    def __str__(self):
+        return self.name
+    class Meta(BaseModel.Meta):
+        db_table = 'biz_band'
+class BandShip(BaseModel):
+    musician = models.ForeignKey(Musician, on_delete=models.CASCADE)
+    band = models.ForeignKey(Band, on_delete=models.CASCADE)
+    joined_date = models.DateField()
+    remark = models.CharField(max_length=256)
+    class Meta(BaseModel.Meta):
+        db_table = 'rel_band_musician'

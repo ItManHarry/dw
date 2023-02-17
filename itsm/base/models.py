@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-import time, datetime
+import time, datetime, uuid
 # Base Model For All.
 '''
 Abstract base classes are useful when you want to put some common information into 
@@ -12,7 +12,7 @@ class BaseModel(models.Model):
     class Meta:
         abstract = True
     # 表共同栏位
-    id = models.BigAutoField(primary_key=True)                  # ID(自动生成自增)
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)  # ID(自动生成UUID)
     active = models.BooleanField(default=True)                  # 是否有效(默认有效)
     created_on = models.DateTimeField(auto_now=True)            # 创建时间UAT
     created_by = models.CharField(max_length=32, null=True)     # 创建人
@@ -38,5 +38,7 @@ class BaseModel(models.Model):
         # 计算时区差
         if off_set is None:
             off_set = locale_time - utc_time
+        else:
+            off_set = datetime.timedelta(hours=off_set)
         locale_date_time = utc_date_time + off_set
         return locale_date_time
