@@ -118,3 +118,26 @@ class BandShip(BaseModel):
     remark = models.CharField(max_length=256)
     class Meta(BaseModel.Meta):
         db_table = 'rel_band_musician'
+
+'''
+One to One 
+'''
+class Capital(BaseModel):
+    name = models.CharField(max_length=32)
+
+    def __str__(self):
+        return self.name
+
+    class Meta(BaseModel.Meta):
+        db_table = 'biz_capital'
+
+class Country(BaseModel):
+    name = models.CharField(max_length=64)
+    capital = models.OneToOneField(Capital, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+    class Meta(BaseModel.Meta):
+        db_table = 'biz_country'
+
