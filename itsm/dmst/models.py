@@ -82,6 +82,7 @@ class Article(BaseModel):
 
     class Meta(BaseModel.Meta):
         db_table = 'biz_article'
+        ordering = ['-pub_date']
 class Department(BaseModel):
     code = models.CharField(max_length=24)
     name = models.CharField(max_length=256)
@@ -138,6 +139,63 @@ class Country(BaseModel):
     def __str__(self):
         return self.name
 
+    def full_str(self):
+        return 'Country is {}, capital is {}.'.format(self.name, self.capital)
+
     class Meta(BaseModel.Meta):
         db_table = 'biz_country'
 
+'''
+Multi-table inheritance¶
+The second type of model inheritance supported by Django is when each model in 
+the hierarchy is a model all by itself. Each model corresponds to its own database 
+table and can be queried and created individually. The inheritance relationship 
+introduces links between the child model and each of its parents (via an automatically-created 
+OneToOneField). For example:
+'''
+class Place(BaseModel):
+    name = models.CharField(max_length=32)
+    address = models.CharField(max_length=128)
+
+    def __str__(self):
+        return self.name
+
+    class Meta(BaseModel.Meta):
+        db_table = 'biz_place'
+
+class Restaurant(Place):
+    serves_hot_dogs = models.BooleanField(default=False)
+    serves_pizza = models.BooleanField(default=False)
+
+    class Meta(Place.Meta):
+        db_table = 'biz_restaurant'
+
+'''
+Proxy models¶
+When using multi-table inheritance, a new database table is created for each 
+subclass of a model. This is usually the desired behavior, since the subclass 
+needs a place to store any additional data fields that are not present on the 
+base class. Sometimes, however, you only want to change the Python behavior of 
+a model – perhaps to change the default manager, or add a new method.
+This is what proxy model inheritance is for: creating a proxy for the original model. 
+You can create, delete and update instances of the proxy model and all the data will 
+be saved as if you were using the original (non-proxied) model. The difference is that 
+you can change things like the default model ordering or the default manager in the proxy, 
+without having to alter the original.
+
+Proxy models are declared like normal models. You tell Django that it’s a proxy model 
+by setting the proxy attribute of the Meta class to True.
+'''
+class Person(BaseModel):
+    name = models.CharField(max_length=64)
+    age = models.PositiveSmallIntegerField()
+
+    def __str__(self):
+        return self.name
+
+    class Meta(BaseModel.Meta):
+        db_table = 'biz_person'
+class ProxyPerson(Person):
+    class Meta(Person.Meta):
+        proxy = True
+        ordering = ['age']
