@@ -2,12 +2,12 @@
 1. 安装&配置
     官网地址：https://conda.io/projects/conda/en/latest/user-guide/install/index.html
 2. 常用命令
-    2.1 查看版本：conda --version
-    2.2 升级版本：conda update conda
-    2.3 创建虚拟环境：conda create --name 'env-name' python=3.11 (指定虚机环境python版本)
-    2.4 激活虚拟环境：conda activate 'env-name' 
-    2.5 查看虚拟环境清单：conda info --envs
-    网址：https://conda.io/projects/conda/en/latest/user-guide/getting-started.html
+   - 查看版本：conda --version
+   - 升级版本：conda update conda
+   - 创建虚拟环境：conda create --name 'env-name' python=3.11 (指定虚机环境python版本)
+   - 激活虚拟环境：conda activate 'env-name' 
+   - 查看虚拟环境清单：conda info --envs
+   - 网址：https://conda.io/projects/conda/en/latest/user-guide/getting-started.html
 # Django 4.0
 ## 安装（使用pip）
 ```bazaar
