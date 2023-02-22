@@ -61,29 +61,27 @@ App目录：
 - Table name：it is automatically derived from some model metadata but can be overridden(defaults:myapp_person)
 - To override the database table name, use the db_table parameter in class Meta
 - Date&DateTime Columns:
-```bazaar
-    # option 'auto_now' means the columns won't be changed any more, option 'default' can be changed !
-    create_date = models.DateField(auto_now=True)
-    create_time = models.DateTimeField(auto_now=True)
-    update_date = models.DateField(default=date.today)
-    update_time = models.DateTimeField(default=timezone.now)
-```
 - Sample
 ```bazaar
 from django.db import models
 class Person(models.Model):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
+    # option 'auto_now' means the columns won't be changed any more, option 'default' can be changed !
+    create_date = models.DateField(auto_now=True)
+    create_time = models.DateTimeField(auto_now=True)
+    update_date = models.DateField(default=date.today)
+    update_time = models.DateTimeField(default=timezone.now)
 ```
 2. Options
-- null:If True, Django will store empty values as NULL in the database. Default is False
-- blank:If True, the field is allowed to be blank. Default is False;Note that this is different than null. null is purely database-related, whereas blank is validation-related. If a field has blank=True, form validation will allow entry of an empty value. If a field has blank=False, the field will be required
-- choices:A sequence of 2-tuples to use as choices for this field. If this is given, the default form widget will be a select box instead of the standard text field and will limit choices to the choices given
-- default:The default value for the field. This can be a value or a callable object. If callable it will be called every time a new object is created
-- help_text:Extra “help” text to be displayed with the form widget. It’s useful for documentation even if your field isn’t used on a form
-- primary_key:If True, this field is the primary key for the model;If you don’t specify primary_key=True for any fields in your model, Django will automatically add an IntegerField to hold the primary key, so you don’t need to set primary_key=True on any of your fields unless you want to override the default primary-key behavior
-- unique:If True, this field must be unique throughout the table
-- verbose_name:Each field type, except for ForeignKey, ManyToManyField and OneToOneField, takes an optional first positional argument – a verbose name. If the verbose name isn’t given, Django will automatically create it using the field’s attribute name, converting underscores to spaces;ForeignKey, ManyToManyField and OneToOneField require the first argument to be a model class, so use the verbose_name keyword argument
+- **null**:If True, Django will store empty values as NULL in the database. Default is False
+- **blank**:If True, the field is allowed to be blank. Default is False;Note that this is different than null. null is purely database-related, whereas blank is validation-related. If a field has blank=True, form validation will allow entry of an empty value. If a field has blank=False, the field will be required
+- **choices**:A sequence of 2-tuples to use as choices for this field. If this is given, the default form widget will be a select box instead of the standard text field and will limit choices to the choices given
+- **default**:The default value for the field. This can be a value or a callable object. If callable it will be called every time a new object is created
+- **help_text**:Extra “help” text to be displayed with the form widget. It’s useful for documentation even if your field isn’t used on a form
+- **primary_key**:If True, this field is the primary key for the model;If you don’t specify primary_key=True for any fields in your model, Django will automatically add an IntegerField to hold the primary key, so you don’t need to set primary_key=True on any of your fields unless you want to override the default primary-key behavior
+- **unique**:If True, this field must be unique throughout the table
+- **verbose_nam**:Each field type, except for ForeignKey, ManyToManyField and OneToOneField, takes an optional first positional argument – a verbose name. If the verbose name isn’t given, Django will automatically create it using the field’s attribute name, converting underscores to spaces;ForeignKey, ManyToManyField and OneToOneField require the first argument to be a model class, so use the verbose_name keyword argument
 3. 数据迁移
 ```bazaar
 python manage.py makemigrations app-name
