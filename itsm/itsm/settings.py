@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'polls.apps.PollsConfig',
     'comm.apps.CommConfig',
     'dmst.apps.DmstConfig',
+    'blog.apps.BlogConfig',
 ]
 
 MIDDLEWARE = [
