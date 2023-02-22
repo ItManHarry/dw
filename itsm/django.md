@@ -87,3 +87,116 @@ class Person(models.Model):
 python manage.py makemigrations app-name
 python manage.py migrate
 ```
+4. 数据操作
+- 创建数据模型
+> To represent database-table data in Python objects, Django uses an intuitive system: A model class represents a database table, and an instance of that class represents a particular record in the database table.
+```bazaar
+from datetime import date
+
+from django.db import models
+
+class Blog(models.Model):
+    name = models.CharField(max_length=100)
+    tagline = models.TextField()
+
+    def __str__(self):
+        return self.name
+
+class Author(models.Model):
+    name = models.CharField(max_length=200)
+    email = models.EmailField()
+
+    def __str__(self):
+        return self.name
+
+class Entry(models.Model):
+    blog = models.ForeignKey(Blog, on_delete=models.CASCADE)
+    headline = models.CharField(max_length=255)
+    body_text = models.TextField()
+    pub_date = models.DateField()
+    mod_date = models.DateField(default=date.today)
+    authors = models.ManyToManyField(Author)
+    number_of_comments = models.IntegerField(default=0)
+    number_of_pingbacks = models.IntegerField(default=0)
+    rating = models.IntegerField(default=5)
+
+    def __str__(self):
+        return self.headline
+```
+- 保存数据（新增/修改）：
+> To create an object, instantiate it using keyword arguments to the model class, then call save() to save it to the database.
+```bazaar
+>>> from blog.models import Blog
+>>> b = Blog(name='Beatles Blog', tagline='All the latest Beatles news.')
+>>> b.save()
+```
+> To save changes to an object that’s already in the database, use save()
+```bazaar
+>>> b5.name = 'New name'
+>>> b5.save()
+```
+> This performs an UPDATE SQL statement behind the scenes. Django doesn’t hit the database until you explicitly call save().
+- Saving ForeignKey and ManyToManyField fields
+> Updating a ForeignKey field works exactly the same way as saving a normal field – assign an object of the right type to the field in question. This example updates the blog attribute of an Entry instance entry, assuming appropriate instances of Entry and Blog are already saved to the database (so we can retrieve them below):
+```bazaar
+>>> from blog.models import Blog, Entry
+>>> entry = Entry.objects.get(pk=1)
+>>> cheese_blog = Blog.objects.get(name="Cheddar Talk")
+>>> entry.blog = cheese_blog
+>>> entry.save()
+```
+> Updating a ManyToManyField works a little differently – use the add() method on the field to add a record to the relation. This example adds the Author instance joe to the entry object:
+```bazaar
+>>> from blog.models import Author
+>>> joe = Author.objects.create(name="Joe")
+>>> entry.authors.add(joe)
+```
+> To add multiple records to a ManyToManyField in one go, include multiple arguments in the call to add(), like this:
+```bazaar
+>>> john = Author.objects.create(name="John")
+>>> paul = Author.objects.create(name="Paul")
+>>> george = Author.objects.create(name="George")
+>>> ringo = Author.objects.create(name="Ringo")
+>>> entry.authors.add(john, paul, george, ringo)
+```
+- Retrieve all data
+```bazaar
+>>> all_entries = Entry.objects.all()
+```
+- Retrieving specific objects with filters
+> The QuerySet returned by all() describes all objects in the database table. Usually, though, you’ll need to select only a subset of the complete set of objects.
+> To create such a subset, you refine the initial QuerySet, adding filter conditions. The two most common ways to refine a QuerySet are:
+  1. filter(**kwargs)
+  > Returns a new QuerySet containing objects that match the given lookup parameters.
+  2. exclude(**kwargs)
+  > Returns a new QuerySet containing objects that do not match the given lookup parameters.
+```bazaar
+Entry.objects.filter(pub_date__year=2006)
+# same as 
+Entry.objects.all().filter(pub_date__year=2006)
+```
+- Chaining filters
+> The result of refining a QuerySet is itself a QuerySet, so it’s possible to chain refinements together. For example:
+```bazaar
+>>> Entry.objects.filter(
+...     headline__startswith='What'
+... ).exclude(
+...     pub_date__gte=datetime.date.today()
+... ).filter(
+...     pub_date__gte=datetime.date(2005, 1, 30)
+... )
+```
+- QuerySets are lazy
+> QuerySets are lazy – the act of creating a QuerySet doesn’t involve any database activity. You can stack filters together all day long, and Django won’t actually run the query until the QuerySet is evaluated. Take a look at this example:
+```bazaar
+>>> q = Entry.objects.filter(headline__startswith="What")
+>>> q = q.filter(pub_date__lte=datetime.date.today())
+>>> q = q.exclude(body_text__icontains="food")
+>>> print(q)
+```
+> Though this looks like three database hits, in fact it hits the database only once, at the last line (print(q)). In general, the results of a QuerySet aren’t fetched from the database until you “ask” for them. When you do, the QuerySet is evaluated by accessing the database. For more details on exactly when evaluation takes place, see When QuerySets are evaluated.
+- Retrieving a single object with get()
+> filter() will always give you a QuerySet, even if only a single object matches the query - in this case, it will be a QuerySet containing a single element.
+```bazaar
+>>> one_entry = Entry.objects.get(pk=1)
+```
