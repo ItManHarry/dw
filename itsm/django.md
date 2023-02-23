@@ -159,6 +159,7 @@ class Entry(models.Model):
 >>> ringo = Author.objects.create(name="Ringo")
 >>> entry.authors.add(john, paul, george, ringo)
 ```
+5. 数据查询
 - Retrieve all data
 ```bazaar
 >>> all_entries = Entry.objects.all()
@@ -200,3 +201,55 @@ Entry.objects.all().filter(pub_date__year=2006)
 ```bazaar
 >>> one_entry = Entry.objects.get(pk=1)
 ```
+- Limiting QuerySets
+> Use a subset of Python’s array-slicing syntax to limit your QuerySet to a certain number of results. This is the equivalent of SQL’s LIMIT and OFFSET clauses.
+> For example, this returns the first 5 objects (LIMIT 5):
+```bazaar
+>>> Entry.objects.all()[:5]
+>>> Entry.objects.all()[5:10]
+```
+- Field Lookup
+> Field lookups are how you specify the meat of an SQL WHERE clause. They’re specified as keyword arguments to the QuerySet methods filter(), exclude() and get().
+> Basic lookups keyword arguments take the form field__lookuptype=value. (That’s a double-underscore). For example:
+```bazaar
+>>> Entry.objects.filter(pub_date__lte='2006-01-01')
+```
+> translates (roughly) into the following SQL:
+```bazaar
+SELECT * FROM blog_entry WHERE pub_date <= '2006-01-01';
+```
+  - exact(equal to '=')
+```bazaar
+# SELECT ... WHERE headline = 'Cat bites dog';
+>>> Entry.objects.get(headline__exact="Cat bites dog")
+>>> Blog.objects.get(id__exact=14)  # Explicit form
+>>> Blog.objects.get(id=14)         # __exact is implied
+```
+  - iexact(忽略大小写)
+```bazaar
+>>> Blog.objects.get(name__iexact="beatles blog")
+```
+> Would match a Blog titled "Beatles Blog", "beatles blog", or even "BeAtlES blOG".
+  - contains(like, case-sensitive)
+```bazaar
+# SELECT ... WHERE headline LIKE '%Lennon%';
+Entry.objects.get(headline__contains='Lennon')
+```
+  - icontains(like, case-insensitive)
+```bazaar
+# SELECT ... WHERE headline LIKE '%lennon%';
+Entry.objects.get(headline__contains='lennon')
+```
+  - startswith/istartswith
+```bazaar
+# SELECT ... WHERE headline LIKE '%lennon';
+Entry.objects.get(headline__startswith='lennon')
+```
+  - endswith/iendwith
+```bazaar
+# SELECT ... WHERE headline LIKE 'lennon%';
+Entry.objects.get(headline__endswith='lennon')
+```
+[QuerySet API reference](https://docs.djangoproject.com/en/4.1/ref/models/querysets/#field-lookups)
+- Lookups that span relationships
+> Django offers a powerful and intuitive way to “follow” relationships in lookups, taking care of the SQL JOINs for you automatically, behind the scenes. To span a relationship, use the field name of related fields across models, separated by double underscores, until you get to the field you want.

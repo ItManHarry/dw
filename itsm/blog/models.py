@@ -60,6 +60,7 @@ class Author(BaseModel):
 
     class Meta(BaseModel.Meta):
         db_table = 'biz_author'
+        ordering = ['name']
 
 class Entry(BaseModel):
     blog = models.ForeignKey(Blog, on_delete=models.CASCADE)
