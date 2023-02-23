@@ -253,3 +253,10 @@ Entry.objects.get(headline__endswith='lennon')
 [QuerySet API reference](https://docs.djangoproject.com/en/4.1/ref/models/querysets/#field-lookups)
 - Lookups that span relationships
 > Django offers a powerful and intuitive way to “follow” relationships in lookups, taking care of the SQL JOINs for you automatically, behind the scenes. To span a relationship, use the field name of related fields across models, separated by double underscores, until you get to the field you want.
+- Filters can reference fields on the model
+> Django provides F expressions to allow such comparisons. Instances of F() act as a reference to a model field within a query. These references can then be used in query filters to compare the values of two different fields on the same model instance.
+> For example, to find a list of all blog entries that have had more comments than pingbacks, we construct an F() object to reference the pingback count, and use that F() object in the query:
+```bazaar
+>>> from django.db.models import F
+>>> Entry.objects.filter(number_of_comments__gt=F('number_of_pingbacks'))
+```
