@@ -260,3 +260,72 @@ Entry.objects.get(headline__endswith='lennon')
 >>> from django.db.models import F
 >>> Entry.objects.filter(number_of_comments__gt=F('number_of_pingbacks'))
 ```
+6. 异步查询（Django 4.1以上）
+- Storing and querying for None
+- Querying JSONField
+> Lookups implementation is different in JSONField, mainly due to the existence of key transformations. 
+```bazaar
+from django.db import models
+
+class Dog(models.Model):
+    name = models.CharField(max_length=200)
+    data = models.JSONField(null=True)
+
+    def __str__(self):
+        return self.name
+```
+7. Complex lookups with Q objects
+> Keyword argument queries – in filter(), etc. – are “AND”ed together. If you need to execute more complex queries (for example, queries with OR statements), you can use Q objects.
+```bazaar
+from django.db.models import Q
+Q(question__startswith='What')
+```
+> Q objects can be combined using the &, |, and ^ operators. When an operator is used on two Q objects, it yields a new Q object.
+> For example, this statement yields a single Q object that represents the “OR” of two "question__startswith" queries:
+```bazaar
+Q(question__startswith='Who') | Q(question__startswith='What')
+```
+> Each lookup function that takes keyword-arguments (e.g. filter(), exclude(), get()) can also be passed one or more Q objects as positional (not-named) arguments. If you provide multiple Q object arguments to a lookup function, the arguments will be “AND”ed together. For example:
+```bazaar
+Poll.objects.get(
+    Q(question__startswith='Who'),
+    Q(pub_date=date(2005, 5, 2)) | Q(pub_date=date(2005, 5, 6))
+)
+'''
+SELECT * from polls WHERE question LIKE 'Who%'
+AND (pub_date = '2005-05-02' OR pub_date = '2005-05-06')
+'''
+```
+8. Deleting objects
+> The delete method, conveniently, is named delete(). This method immediately deletes the object and returns the number of objects deleted and a dictionary with the number of deletions per object type. Example:
+```bazaar
+>>> e.delete()
+(1, {'blog.Entry': 1})
+```
+> You can also delete objects in bulk. Every QuerySet has a delete() method, which deletes all members of that QuerySet.
+> For example, this deletes all Entry objects with a pub_date year of 2005:
+```bazaar
+>>> Entry.objects.filter(pub_date__year=2005).delete()
+(5, {'webapp.Entry': 5})
+```
+9. Copying model instances
+> Although there is no built-in method for copying model instances, it is possible to easily create new instance with all fields’ values copied. In the simplest case, you can set pk to None and _state.adding to True. Using our blog example:
+```bazaar
+blog = Blog(name='My blog', tagline='Blogging is easy')
+blog.save() # blog.pk == 1
+
+blog.pk = None
+blog._state.adding = True
+blog.save() # blog.pk == 2
+```
+10. Updating multiple objects at once
+> Sometimes you want to set a field to a particular value for all the objects in a QuerySet. You can do this with the update() method. For example:
+```bazaar
+# Update all the headlines with pub_date in 2007.
+Entry.objects.filter(pub_date__year=2007).update(headline='Everything is the same')
+```
+> Calls to update can also use F expressions to update one field based on the value of another field in the model. This is especially useful for incrementing counters based upon their current value. For example, to increment the pingback count for every entry in the blog:
+```bazaar
+>>> Entry.objects.update(number_of_pingbacks=F('number_of_pingbacks') + 1)
+```
+

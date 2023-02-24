@@ -78,3 +78,13 @@ class Entry(BaseModel):
 
     class Meta(BaseModel.Meta):
         db_table = 'biz_entry'
+
+class Dog(BaseModel):
+    name = models.CharField(max_length=32)
+    data = models.JSONField(null=True, default=dict)
+
+    def __str__(self):
+        return self.name
+
+    class Meta(BaseModel.Meta):
+        db_table = 'biz_dog'
