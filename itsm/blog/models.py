@@ -18,7 +18,7 @@ class BaseModel(models.Model):
     created_by = models.CharField(max_length=32, null=True)                         # 创建人
     updated_on = models.DateTimeField(default=timezone.now)                         # 更新时间UAT
     updated_by = models.CharField(max_length=32, null=True)                         # 更新人
-    #
+
     def created_on_locale(self, off_set=None):
         return self.utc_to_locale(self.created_on, off_set)
 
@@ -63,7 +63,7 @@ class Author(BaseModel):
         ordering = ['name']
 
 class Entry(BaseModel):
-    blog = models.ForeignKey(Blog, on_delete=models.CASCADE)
+    blog = models.ForeignKey(Blog, on_delete=models.CASCADE, related_name='entries')
     headline = models.CharField(max_length=256)
     body_text = models.TextField()
     pub_date = models.DateField()
@@ -78,6 +78,12 @@ class Entry(BaseModel):
 
     class Meta(BaseModel.Meta):
         db_table = 'biz_entry'
+class EntryDetail(BaseModel):
+    entry = models.OneToOneField(Entry, on_delete=models.CASCADE)
+    detail = models.TextField()
+
+    class Meta(BaseModel.Meta):
+        db_table = 'biz_entry_detail'
 
 class Dog(BaseModel):
     name = models.CharField(max_length=32)

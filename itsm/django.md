@@ -328,4 +328,60 @@ Entry.objects.filter(pub_date__year=2007).update(headline='Everything is the sam
 ```bazaar
 >>> Entry.objects.update(number_of_pingbacks=F('number_of_pingbacks') + 1)
 ```
+11. Related objects
+  - One-to-many relationships
+  > If a model has a ForeignKey, instances of that model will have access to the related (foreign) object via an attribute of the model.
+```bazaar
+>>> e = Entry.objects.get(id=2)
+>>> e.blog # Returns the related Blog object.
+```
+  - Following relationships “backward”
+  > If a model has a ForeignKey, instances of the foreign-key model will have access to a Manager that returns all instances of the first model. By default, this Manager is named FOO_set, where FOO is the source model name, lowercased. This Manager returns QuerySets, which can be filtered and manipulated as described in the “Retrieving objects” section above.
+```bazaar
+>>> b = Blog.objects.get(id=1)
+>>> b.entry_set.all() # Returns all Entry objects related to Blog.
 
+# b.entry_set is a Manager that returns QuerySets.
+>>> b.entry_set.filter(headline__contains='Lennon')
+>>> b.entry_set.count()
+```
+  - Additional methods to handle related objects
+    1. **add(obj1, obj2, ...)** : Adds the specified model objects to the related object set.
+    2. **create(\*\*kwargs)**:Creates a new object, saves it and puts it in the related object set. Returns the newly created object.
+    3. **remove(obj1, obj2, ...)**:Removes the specified model objects from the related object set.
+    4. **clear()**:Removes all objects from the related object set.
+    5. **set(objs)**:Replace the set of related objects.
+  - Many-to-many relationships
+  > Both ends of a many-to-many relationship get automatic API access to the other end. The API works similar to a “backward” one-to-many relationship, above.
+  > One difference is in the attribute naming: The model that defines the ManyToManyField uses the attribute name of that field itself, whereas the “reverse” model uses the lowercased model name of the original model, plus '_set' (just like reverse one-to-many relationships).
+```bazaar
+e = Entry.objects.get(id=3)
+e.authors.all() # Returns all Author objects for this Entry.
+e.authors.count()
+e.authors.filter(name__contains='John')
+
+a = Author.objects.get(id=5)
+a.entry_set.all() # Returns all Entry objects for this Author.
+```  
+  > Like ForeignKey, ManyToManyField can specify related_name. In the above example, if the ManyToManyField in Entry had specified related_name='entries', then each Author instance would have an entries attribute instead of entry_set.
+  > Another difference from one-to-many relationships is that in addition to model instances, the add(), set(), and remove() methods on many-to-many relationships accept primary key values. For example, if e1 and e2 are Entry instances, then these set() calls work identically:
+```bazaar
+a = Author.objects.get(id=5)
+a.entry_set.set([e1, e2])
+a.entry_set.set([e1.pk, e2.pk])
+```   
+  - One-to-one relationships
+  > One-to-one relationships are very similar to many-to-one relationships. If you define a OneToOneField on your model, instances of that model will have access to the related object via an attribute of the model.
+```bazaar
+class EntryDetail(models.Model):
+    entry = models.OneToOneField(Entry, on_delete=models.CASCADE)
+    details = models.TextField()
+
+ed = EntryDetail.objects.get(id=2)
+ed.entry # Returns the related Entry object.
+```
+  > The difference comes in “reverse” queries. The related model in a one-to-one relationship also has access to a Manager object, but that Manager represents a single object, rather than a collection of objects:
+```bazaar
+e = Entry.objects.get(id=2)
+e.entrydetail # returns the related EntryDetail object
+```  
