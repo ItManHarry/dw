@@ -173,4 +173,5 @@ class Store(models.Model):
 > This doesn’t apply just to foreign keys. It also works with many-to-many relations. For example, we can ask for every author, annotated with the total number of pages considering all the books the author has (co-)authored (note how we use 'book' to specify the Author -> Book reverse many-to-many hop):
 ```bazaar
 >>> Author.objects.annotate(total_pages=Sum('book__pages'))
+>>> Author.objects.aggregate(average_rating=Avg('book__rating'))
 ```
