@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'comm.apps.CommConfig',
     'dmst.apps.DmstConfig',
     'blog.apps.BlogConfig',
+    'aggr.apps.AggrConfig',
 ]
 
 MIDDLEWARE = [

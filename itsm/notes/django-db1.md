@@ -1,5 +1,5 @@
-# 数据库
-1. 数据模型
+# 数据库 - 1
+### 数据模型
 - Each model is a Python class that subclasses django.db.models.Model
 - Each attribute of the model represents a database field
 - With all of this, Django gives you an automatically-generated database-access API; see Making queries
@@ -18,7 +18,7 @@ class Person(models.Model):
     update_date = models.DateField(default=date.today)
     update_time = models.DateTimeField(default=timezone.now)
 ```
-2. Options
+### Options
 - **null**:If True, Django will store empty values as NULL in the database. Default is False
 - **blank**:If True, the field is allowed to be blank. Default is False;Note that this is different than null. null is purely database-related, whereas blank is validation-related. If a field has blank=True, form validation will allow entry of an empty value. If a field has blank=False, the field will be required
 - **choices**:A sequence of 2-tuples to use as choices for this field. If this is given, the default form widget will be a select box instead of the standard text field and will limit choices to the choices given
@@ -27,12 +27,12 @@ class Person(models.Model):
 - **primary_key**:If True, this field is the primary key for the model;If you don’t specify primary_key=True for any fields in your model, Django will automatically add an IntegerField to hold the primary key, so you don’t need to set primary_key=True on any of your fields unless you want to override the default primary-key behavior
 - **unique**:If True, this field must be unique throughout the table
 - **verbose_nam**:Each field type, except for ForeignKey, ManyToManyField and OneToOneField, takes an optional first positional argument – a verbose name. If the verbose name isn’t given, Django will automatically create it using the field’s attribute name, converting underscores to spaces;ForeignKey, ManyToManyField and OneToOneField require the first argument to be a model class, so use the verbose_name keyword argument
-3. 数据迁移
+### 数据迁移
 ```bazaar
 python manage.py makemigrations app-name
 python manage.py migrate
 ```
-4. 数据操作
+### 数据操作
 - 创建数据模型
 > To represent database-table data in Python objects, Django uses an intuitive system: A model class represents a database table, and an instance of that class represents a particular record in the database table.
 ```bazaar
@@ -104,7 +104,7 @@ class Entry(models.Model):
 >>> ringo = Author.objects.create(name="Ringo")
 >>> entry.authors.add(john, paul, george, ringo)
 ```
-5. 数据查询
+### 数据查询
 - Retrieve all data
 ```bazaar
 >>> all_entries = Entry.objects.all()
@@ -205,7 +205,7 @@ Entry.objects.get(headline__endswith='lennon')
 >>> from django.db.models import F
 >>> Entry.objects.filter(number_of_comments__gt=F('number_of_pingbacks'))
 ```
-6. 异步查询（Django 4.1以上）
+### 异步查询（Django 4.1以上）
 - Storing and querying for None
 - Querying JSONField
 > Lookups implementation is different in JSONField, mainly due to the existence of key transformations. 
@@ -219,7 +219,7 @@ class Dog(models.Model):
     def __str__(self):
         return self.name
 ```
-7. Complex lookups with Q objects
+### Complex lookups with Q objects
 > Keyword argument queries – in filter(), etc. – are “AND”ed together. If you need to execute more complex queries (for example, queries with OR statements), you can use Q objects.
 ```bazaar
 from django.db.models import Q
@@ -241,7 +241,7 @@ SELECT * from polls WHERE question LIKE 'Who%'
 AND (pub_date = '2005-05-02' OR pub_date = '2005-05-06')
 '''
 ```
-8. Deleting objects
+### Deleting objects
 > The delete method, conveniently, is named delete(). This method immediately deletes the object and returns the number of objects deleted and a dictionary with the number of deletions per object type. Example:
 ```bazaar
 >>> e.delete()
@@ -253,7 +253,7 @@ AND (pub_date = '2005-05-02' OR pub_date = '2005-05-06')
 >>> Entry.objects.filter(pub_date__year=2005).delete()
 (5, {'webapp.Entry': 5})
 ```
-9. Copying model instances
+### Copying model instances
 > Although there is no built-in method for copying model instances, it is possible to easily create new instance with all fields’ values copied. In the simplest case, you can set pk to None and _state.adding to True. Using our blog example:
 ```bazaar
 blog = Blog(name='My blog', tagline='Blogging is easy')
@@ -263,7 +263,7 @@ blog.pk = None
 blog._state.adding = True
 blog.save() # blog.pk == 2
 ```
-10. Updating multiple objects at once
+### Updating multiple objects at once
 > Sometimes you want to set a field to a particular value for all the objects in a QuerySet. You can do this with the update() method. For example:
 ```bazaar
 # Update all the headlines with pub_date in 2007.
@@ -273,7 +273,7 @@ Entry.objects.filter(pub_date__year=2007).update(headline='Everything is the sam
 ```bazaar
 >>> Entry.objects.update(number_of_pingbacks=F('number_of_pingbacks') + 1)
 ```
-11. Related objects
+### Related objects
   - One-to-many relationships
   > If a model has a ForeignKey, instances of that model will have access to the related (foreign) object via an attribute of the model.
 ```bazaar
