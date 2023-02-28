@@ -175,3 +175,54 @@ class Store(models.Model):
 >>> Author.objects.annotate(total_pages=Sum('book__pages'))
 >>> Author.objects.aggregate(average_rating=Avg('book__rating'))
 ```
+### Aggregations and other QuerySet clauses
+- filter() and exclude()
+> When used with an annotate() clause, a filter has the effect of constraining the objects for which an annotation is calculated. For example, you can generate an annotated list of all books that have a title starting with “Django” using the query:
+```bazaar
+>>> from django.db.models import Avg, Count
+>>> Book.objects.filter(name__startswith="Django").annotate(num_authors=Count('authors'))
+```
+> When used with an aggregate() clause, a filter has the effect of constraining the objects over which the aggregate is calculated. For example, you can generate the average price of all books with a title that starts with “Django” using the query:
+```bazaar
+>>> Book.objects.filter(name__startswith="Django").aggregate(Avg('price'))
+```
+- Filtering on annotations
+> Annotated values can also be filtered. The alias for the annotation can be used in filter() and exclude() clauses in the same way as any other model field.
+> For example, to generate a list of books that have more than one author, you can issue the query:
+```bazaar
+>>> Book.objects.annotate(num_authors=Count('authors')).filter(num_authors__gt=1)
+```
+> If you need two annotations with two separate filters you can use the filter argument with any aggregate. For example, to generate a list of authors with a count of highly rated books
+- Order of annotate() and filter() clauses
+> When developing a complex query that involves both annotate() and filter() clauses, pay particular attention to the order in which the clauses are applied to the QuerySet.
+> When an annotate() clause is applied to a query, the annotation is computed over the state of the query up to the point where the annotation is requested. The practical implication of this is that filter() and annotate() are not commutative operations.
+```bazaar
+>>> a, b = Publisher.objects.annotate(num_books=Count('book', distinct=True)).filter(book__rating__gt=3.0)
+>>> a, a.num_books
+(<Publisher: A>, 2)
+>>> b, b.num_books
+(<Publisher: B>, 2)
+
+>>> a, b = Publisher.objects.filter(book__rating__gt=3.0).annotate(num_books=Count('book'))
+>>> a, a.num_books
+(<Publisher: A>, 2)
+>>> b, b.num_books
+(<Publisher: B>, 1)
+```
+- order_by()
+> Annotations can be used as a basis for ordering. When you define an order_by() clause, the aggregates you provide can reference any alias defined as part of an annotate() clause in the query.
+> For example, to order a QuerySet of books by the number of authors that have contributed to the book, you could use the following query:
+```bazaar
+>>> Book.objects.annotate(num_authors=Count('authors')).order_by('num_authors')
+```
+- values()
+> Ordinarily, annotations are generated on a per-object basis - an annotated QuerySet will return one result for each object in the original QuerySet. However, when a values() clause is used to constrain the columns that are returned in the result set, the method for evaluating annotations is slightly different. Instead of returning an annotated result for each result in the original QuerySet, the original results are grouped according to the unique combinations of the fields specified in the values() clause. An annotation is then provided for each unique group; the annotation is computed over all members of the group.
+```bazaar
+>>> Author.objects.annotate(average_rating=Avg('book__rating'))
+```
+> This will return one result for each author in the database, annotated with their average book rating.
+> However, the result will be slightly different if you use a values() clause:
+```bazaar
+>>> Author.objects.values('name').annotate(average_rating=Avg('book__rating'))
+```
+> In this example, the authors will be grouped by name, so you will only get an annotated result for each unique author name. This means if you have two authors with the same name, their results will be merged into a single result in the output of the query; the average will be computed as the average over the books written by both authors.
