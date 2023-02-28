@@ -33,7 +33,7 @@ class Store(models.Model):
         return self.name
 class PollManager(models.Manager):
     def with_counts(self):
-        return self.annoate(num_reponses=Coalesce(models.Count('response'), 0))
+        return self.annotate(num_responses=Coalesce(models.Count('response'), 0))
 class OpinionPoll(models.Model):
     question = models.CharField(max_length=256)
     objects = PollManager()
