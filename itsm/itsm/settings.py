@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'dmst.apps.DmstConfig',
     'blog.apps.BlogConfig',
     'aggr.apps.AggrConfig',
+    'dbms.apps.DbmsConfig',
 ]
 
 MIDDLEWARE = [
