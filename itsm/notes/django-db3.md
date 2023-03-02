@@ -244,3 +244,10 @@ END;
 with connection.cursor() as cursor:
     cursor.callproc('test_procedure', [1, 'test'])
 ```
+### Using raw cursors with multiple databases
+> If you are using more than one database you can use django.db.connections to obtain the connection (and cursor) for a specific database. django.db.connections is a dictionary-like object that allows you to retrieve a specific connection using its alias:
+```bazaar
+from django.db import connections
+with connections['my_db_alias'].cursor() as cursor:
+    ...
+```
