@@ -251,3 +251,111 @@ from django.db import connections
 with connections['my_db_alias'].cursor() as cursor:
     ...
 ```
+### Database access optimization
+1. Use standard DB optimization techniques
+  - Indexes. This is a number one priority, after you have determined from profiling what indexes should be added. Use Meta.indexes or Field.db_index to add these from Django. Consider adding indexes to fields that you frequently query using filter(), exclude(), order_by(), etc. as indexes may help to speed up lookups. Note that determining the best indexes is a complex database-dependent topic that will depend on your particular application. The overhead of maintaining an index may outweigh any gains in query speed.
+```bazaar
+from django.db import models
+
+class Customer(models.Model):
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['last_name', 'first_name']),
+            models.Index(fields=['first_name'], name='first_name_idx'),
+        ]
+```
+  - Appropriate use of field types
+2. Understand QuerySets
+  - Understand QuerySet evaluation
+> To avoid performance problems, it is important to understand:
+    1. that QuerySets are lazy.
+    2. when they are evaluated.
+    3. how the data is held in memory.
+  - Understand cached attributes
+> As well as caching of the whole QuerySet, there is caching of the result of attributes on ORM objects. In general, attributes that are not callable will be cached. For example, assuming the example blog models:
+```bazaar
+>>> entry = Entry.objects.get(id=1)
+>>> entry.blog   # Blog object is retrieved at this point
+>>> entry.blog   # cached version, no DB access
+>>> entry = Entry.objects.get(id=1)
+>>> entry.authors.all()   # query performed
+>>> entry.authors.all()   # query performed again
+```
+> Be careful with your own custom properties - it is up to you to implement caching when required, for example using the cached_property decorator.
+  - Use the with template tag
+> To make use of the caching behavior of QuerySet, you may need to use the with template tag.
+```bazaar
+Caches a complex variable under a simpler name. This is useful when accessing an “expensive” method (e.g., one that hits the database) multiple times.
+{% with total=business.employees.count %}
+    {{ total }} employee{{ total|pluralize }}
+{% endwith %}
+The populated variable (in the example above, total) is only available between the {% with %} and {% endwith %} tags.
+You can assign more than one context variable:
+{% with alpha=1 beta=2 %}
+    ...
+{% endwith %}
+```
+  - Use QuerySet.contains(obj)
+  - Use QuerySet.count()
+  - Use QuerySet.exists()
+  - Don’t order results if you don’t care
+> Ordering is not free; each field to order by is an operation the database must perform. If a model has a default ordering (Meta.ordering) and you don’t need it, remove it on a QuerySet by calling order_by() with no parameters.
+> Adding an index to your database may help to improve ordering performance.
+  - Create in bulk
+> When creating objects, where possible, use the bulk_create() method to reduce the number of SQL queries. For example:
+```bazaar
+Entry.objects.bulk_create([
+    Entry(headline='This is a test'),
+    Entry(headline='This is only a test'),
+])
+…is preferable to:
+Entry.objects.create(headline='This is a test')
+Entry.objects.create(headline='This is only a test')
+```
+  - Update in bulk
+> When updating objects, where possible, use the bulk_update() method to reduce the number of SQL queries. Given a list or queryset of objects:
+```bazaar
+entries[0].headline = 'This is not a test'
+entries[1].headline = 'This is no longer a test'
+Entry.objects.bulk_update(entries, ['headline'])
+…is preferable to:
+entries[0].headline = 'This is not a test'
+entries[0].save()
+entries[1].headline = 'This is no longer a test'
+entries[1].save()
+```
+  - Insert in bulk
+> When inserting objects into ManyToManyFields, use add() with multiple objects to reduce the number of SQL queries. For example:
+```bazaar
+PizzaToppingRelationship = Pizza.toppings.through
+PizzaToppingRelationship.objects.bulk_create([
+    PizzaToppingRelationship(pizza=my_pizza, topping=pepperoni),
+    PizzaToppingRelationship(pizza=your_pizza, topping=pepperoni),
+    PizzaToppingRelationship(pizza=your_pizza, topping=mushroom),
+], ignore_conflicts=True)
+…is preferable to:
+my_pizza.toppings.add(pepperoni)
+your_pizza.toppings.add(pepperoni, mushroom)
+```
+  - Remove in bulk
+```bazaar
+my_band.members.remove(me, my_friend)
+…is preferable to:
+my_band.members.remove(me)
+my_band.members.remove(my_friend)
+When removing different pairs of objects from ManyToManyFields, use delete() on a Q expression with multiple through model instances to reduce the number of SQL queries. For example:
+from django.db.models import Q
+PizzaToppingRelationship = Pizza.toppings.through
+PizzaToppingRelationship.objects.filter(
+    Q(pizza=my_pizza, topping=pepperoni) |
+    Q(pizza=your_pizza, topping=pepperoni) |
+    Q(pizza=your_pizza, topping=mushroom)
+).delete()
+…is preferable to:
+my_pizza.toppings.remove(pepperoni)
+your_pizza.toppings.remove(pepperoni, mushroom)
+
+```
