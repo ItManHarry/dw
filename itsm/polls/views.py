@@ -4,6 +4,45 @@ from django.template import loader
 from . models import *
 from django.db.models import F
 from django.views import generic
+from . forms import UploadFileForm, ContactForm
+def handle_uploaded_file(f=None):
+    if f is not None:
+        print('Upload a file ...')
+        with open('d:\\upload.txt', 'wb+') as destination:
+            for chunk in f.chunks():
+                destination.write(chunk)
+    else:
+        print('No file to upload ...')
+
+
+def contact(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            subject = form.cleaned_data['subject']
+            message = form.cleaned_data['message']
+            sender = form.cleaned_data['sender']
+            cc_myself = form.cleaned_data['cc_myself']
+            print('Subject is : ', subject)
+            print('Message is : ', message)
+            print('Sender is : ', sender)
+            print('CC myself is : ', cc_myself)
+            return redirect(reverse('polls:contact'))
+    else:
+        form = ContactForm()
+    return render(request, 'polls/contact.html', dict(form=form.render('polls/form_contact.html')))
+
+def upload_file(request):
+    handle_uploaded_file()
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            handle_uploaded_file(request.FILES['file'])
+            return redirect(reverse('polls:upload'))
+    else:
+        form = UploadFileForm()
+    return render(request, 'polls/upload.html', {'form': form})
+
 def json_resp(request):
     return JsonResponse({
         'name': 'Harry-程国前',

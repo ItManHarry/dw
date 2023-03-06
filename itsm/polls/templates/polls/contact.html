@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+{%load static%}
+<head>
+    <meta charset="UTF-8">
+    <title>Polls Contact Page</title>
+    <link rel="icon" type="image/x-icon" href="{%static 'polls/images/icon/sys.ico'%}">
+    <link rel="stylesheet" type="text/css" href="{%static 'polls/css/bootstrap.min.css'%}">
+    <link rel="stylesheet" type="text/css" href="{%static 'polls/css/bootstrap-icons.css'%}">
+    <link rel="stylesheet" type="text/css" href="{%static 'polls/css/jquery-confirm.min.css'%}">
+</head>
+<body style="background: white url('{%static 'polls/images/bg/1.jpg'%}') no-repeat;margin-top:50px;">
+<div class="container">
+    <h3><i class="bi bi-person-vcard"></i>&nbsp;&nbsp;Contact Information</h3><br>
+    <form method="post" action="{%url 'polls:contact'%}">
+        {%csrf_token%}
+        <!--<table class="table">
+            {{form}}
+            <tr>
+                <td colspan="2">
+                    <input type="submit" class="btn btn-primary" value="Submit">
+                </td>
+            </tr>
+        </table>-->
+        <!--{{ form.non_field_errors }}
+        <div class="row">
+            <div class="col-2">
+                {{ form.subject.label_tag }}
+            </div>
+            <div class="col-10">
+                {{ form.subject }}&nbsp;&nbsp;{{ form.subject.errors }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-2">
+                {{ form.message.label_tag }}
+            </div>
+            <div class="col-10">
+                {{ form.message }}&nbsp;&nbsp;{{ form.message.errors }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-2">
+                {{ form.sender.label_tag }}
+            </div>
+            <div class="col-10">
+                {{ form.sender }}&nbsp;&nbsp;{{ form.sender.errors }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-2">
+                {{ form.sender.label_tag }}
+            </div>
+            <div class="col-10">
+                {{ form.cc_myself }}&nbsp;&nbsp;{{ form.cc_myself.errors }}
+            </div>
+        </div>-->
+        {{form}}
+        <div class="row">
+            <div class="col">
+                <input type="submit" class="btn btn-primary" value="Submit">
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript" src="{%static 'polls/js/jquery-3.6.1.min.js'%}"></script>
+<script type="text/javascript" src="{%static 'polls/js/bootstrap.bundle.min.js'%}"></script>
+<script type="text/javascript" src="{%static 'polls/js/jquery-confirm.min.js'%}"></script>
+<script>
+    $(function(){
+        //alert('OK')
+    })
+</script>
+</body>
+</html>

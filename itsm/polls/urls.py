@@ -13,4 +13,6 @@ urlpatterns = [
     path('reverse/', views.reverse_handler, name='reverse'),
     path('json/', views.json_resp, name='json_resp'),
     path('home/', views.home, name='home'),
+    path('upload/', views.upload_file, name='upload'),
+    path('contact/', views.contact, name='contact'),
 ]

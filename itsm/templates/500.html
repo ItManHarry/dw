@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+{%load static%}
+<head>
+    <meta charset="UTF-8">
+    <title>Page Not Found Page</title>
+    <link rel="icon" type="image/x-icon" href="{%static 'images/icon/sys.ico'%}">
+    <link rel="stylesheet" type="text/css" href="{%static 'css/bootstrap.min.css'%}">
+    <link rel="stylesheet" type="text/css" href="{%static 'css/bootstrap-icons.css'%}">
+    <link rel="stylesheet" type="text/css" href="{%static 'css/jquery-confirm.min.css'%}">
+</head>
+<body style="background: white url('{%static 'images/bg/1.jpg'%}') no-repeat;margin-top:50px;">
+<div class="container">
+    <div class="row">
+        <div class="col text-center">
+          <h3 class="text-info"><i class="bi bi-exclamation-triangle-fill"></i>&nbsp;&nbsp;System Internal Error, please contact the administrator!</h3><br>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="{%static 'js/jquery-3.6.1.min.js'%}"></script>
+<script type="text/javascript" src="{%static 'js/bootstrap.bundle.min.js'%}"></script>
+<script type="text/javascript" src="{%static 'js/jquery-confirm.min.js'%}"></script>
+<script>
+    $(function(){
+        //alert('OK')
+    })
+</script>
+</body>
+</html>

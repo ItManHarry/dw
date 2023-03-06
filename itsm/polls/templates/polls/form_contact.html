@@ -1,0 +1,24 @@
+{%for field in form%}
+  <div class="row">
+    <div class="col">
+      {{form.non_field_errors}}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-2">
+      {{field.label_tag}}
+    </div>
+    {%if field.help_text%}
+      <div class="col-8">
+        {{field}}&nbsp;&nbsp;{{field.errors}}
+      </div>
+      <div class="col-2">
+        {{field.help_text|safe}}
+      </div>
+    {%else%}
+      <div class="col-10">
+        {{field}}&nbsp;&nbsp;{{field.errors}}
+      </div>
+    {%endif%}
+  </div>
+{%endfor%}
