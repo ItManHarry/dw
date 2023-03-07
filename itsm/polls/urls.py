@@ -14,5 +14,7 @@ urlpatterns = [
     path('json/', views.json_resp, name='json_resp'),
     path('home/', views.home, name='home'),
     path('upload/', views.upload_file, name='upload'),
+    path('uploads/', views.upload_files, name='uploads'),
     path('contact/', views.contact, name='contact'),
+    # path('multiple/', views.FileFieldFormView.as_view(), name='multiple_upload'),
 ]

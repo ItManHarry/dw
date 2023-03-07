@@ -11,20 +11,16 @@
 </head>
 <body style="background: white url('{%static 'polls/images/bg/1.jpg'%}') no-repeat;margin-top:50px;">
 <div class="container">
-    <h3><i class="bi bi-upload"></i>&nbsp;&nbsp;Upload File</h3><br>
-    <div class="row">
-        <div class="col">
-            <form method="post" action="{%url 'polls:upload'%}" enctype="multipart/form-data">
-                {%csrf_token%}
-                {{form}}<br>
-                <div class="row">
-                    <div class="col">
-                        <input type="submit" class="btn btn-primary" value="Submit">
-                    </div>
-                </div>
-            </form>
+    <h3><i class="bi bi-upload"></i>&nbsp;&nbsp;Upload Files</h3><br>
+    <form method="post" action="{%url 'polls:uploads'%}" enctype="multipart/form-data">
+        {%csrf_token%}
+        {{form}}<br>
+        <div class="row">
+            <div class="col">
+                <input type="submit" class="btn btn-primary" value="Submit">
+            </div>
         </div>
-    </div>
+    </form>
 </div>
 <script type="text/javascript" src="{%static 'polls/js/jquery-3.6.1.min.js'%}"></script>
 <script type="text/javascript" src="{%static 'polls/js/bootstrap.bundle.min.js'%}"></script>

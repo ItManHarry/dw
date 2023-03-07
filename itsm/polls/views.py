@@ -4,17 +4,40 @@ from django.template import loader
 from . models import *
 from django.db.models import F
 from django.views import generic
-from . forms import UploadFileForm, ContactForm
+from django.views.generic.edit import FormView
+from . forms import UploadFileForm, ContactForm, FileFieldForm
+import os
+# class FileFieldFormView(FormView):
+#     form_class = FileFieldForm
+#     template_name = 'polls/form_upload.html'
+#     success_url = reverse('polls:upload')
+#     print('Success URL is : ', success_url)
+#     def post(self, request, *args, **kwargs):
+#         # form_class = self.get_form_class()
+#         # form = self.get_form(form_class)
+#         # files = request.FILES.getlist('file_field')
+#         # if form.is_valid():
+#         #     # for f in files:
+#         #     #     print('file upload...')
+#         #     return self.form_valid(form)
+#         # else:
+#         #     return self.form_invalid(form)
+#         pass
 def handle_uploaded_file(f=None):
     if f is not None:
+        attr_path = os.path.join(os.path.abspath('.'), 'attachments/files')
+        print('Attachments path is : ', attr_path)
+        if not os.path.exists(attr_path):
+            os.makedirs(attr_path)
+        # 文件存放路径
+        file_store = os.path.join(attr_path, f.name)
+        print('File store path is : ', file_store)
         print('Upload a file ...')
-        with open('d:\\upload.txt', 'wb+') as destination:
+        with open(file_store, 'wb+') as destination:
             for chunk in f.chunks():
                 destination.write(chunk)
     else:
         print('No file to upload ...')
-
-
 def contact(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
@@ -30,18 +53,30 @@ def contact(request):
             return redirect(reverse('polls:contact'))
     else:
         form = ContactForm()
-    return render(request, 'polls/contact.html', dict(form=form.render('polls/form_contact.html')))
+    return render(request, 'polls/contact.html', dict(form=form.render('polls/form_template.html')))
 
+def upload_files(request):
+    if request.method == 'POST':
+        form = FileFieldForm(request.POST, request.FILES)
+        if form.is_valid():
+            files = request.FILES.getlist('file_field')
+            for file in files:
+                handle_uploaded_file(file)
+            return redirect(reverse('polls:uploads'))
+    else:
+        form = FileFieldForm()
+    return render(request, 'polls/uploads.html', {'form': form.render('polls/form_template.html')})
 def upload_file(request):
-    handle_uploaded_file()
+    # handle_uploaded_file()
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            handle_uploaded_file(request.FILES['file'])
+            file = request.FILES['file']
+            handle_uploaded_file(file)
             return redirect(reverse('polls:upload'))
     else:
         form = UploadFileForm()
-    return render(request, 'polls/upload.html', {'form': form})
+    return render(request, 'polls/upload.html', {'form': form.render('polls/form_template.html')})
 
 def json_resp(request):
     return JsonResponse({
