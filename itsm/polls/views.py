@@ -23,18 +23,16 @@ import os
 #         # else:
 #         #     return self.form_invalid(form)
 #         pass
-def handle_uploaded_file(f=None):
-    if f is not None:
+def handle_uploaded_file(file=None):
+    if file:
+        # 文件存放路径
         attr_path = os.path.join(os.path.abspath('.'), 'attachments/files')
-        print('Attachments path is : ', attr_path)
         if not os.path.exists(attr_path):
             os.makedirs(attr_path)
-        # 文件存放路径
-        file_store = os.path.join(attr_path, f.name)
-        print('File store path is : ', file_store)
-        print('Upload a file ...')
+        file_store = os.path.join(attr_path, file.name)
+        # 执行上传
         with open(file_store, 'wb+') as destination:
-            for chunk in f.chunks():
+            for chunk in file.chunks():
                 destination.write(chunk)
     else:
         print('No file to upload ...')

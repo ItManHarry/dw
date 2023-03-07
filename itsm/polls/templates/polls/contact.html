@@ -12,7 +12,7 @@
 <body style="background: white url('{%static 'polls/images/bg/1.jpg'%}') no-repeat;margin-top:50px;">
 <div class="container">
     <h3><i class="bi bi-person-vcard"></i>&nbsp;&nbsp;Contact Information</h3><br>
-    <form method="post" action="{%url 'polls:contact'%}">
+    <form method="post">
         {%csrf_token%}
         <!--<table class="table">
             {{form}}

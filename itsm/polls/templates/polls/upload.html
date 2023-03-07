@@ -14,7 +14,7 @@
     <h3><i class="bi bi-upload"></i>&nbsp;&nbsp;Upload File</h3><br>
     <div class="row">
         <div class="col">
-            <form method="post" action="{%url 'polls:upload'%}" enctype="multipart/form-data">
+            <form method="post" enctype="multipart/form-data">
                 {%csrf_token%}
                 {{form}}<br>
                 <div class="row">

@@ -12,7 +12,7 @@
 <body style="background: white url('{%static 'polls/images/bg/1.jpg'%}') no-repeat;margin-top:50px;">
 <div class="container">
     <h3><i class="bi bi-upload"></i>&nbsp;&nbsp;Upload Files</h3><br>
-    <form method="post" action="{%url 'polls:uploads'%}" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data">
         {%csrf_token%}
         {{form}}<br>
         <div class="row">
