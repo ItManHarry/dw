@@ -23,6 +23,15 @@ import os
 #         # else:
 #         #     return self.form_invalid(form)
 #         pass
+def login(request):
+    if request.method == 'POST':
+        if request.session.test_cookie_worked():
+            request.session.delete_test_cookie()
+            return HttpResponse('You have logged in!')
+        else:
+            return HttpResponse('Please enable cookie and try again!')
+    request.session.set_test_cookie()
+    return render(request, 'polls/login.html')
 def handle_uploaded_file(file=None):
     if file:
         # 文件上传路径
@@ -44,10 +53,16 @@ def contact(request):
             message = form.cleaned_data['message']
             sender = form.cleaned_data['sender']
             cc_myself = form.cleaned_data['cc_myself']
+            # birth_year = form.changed_data['birth_year']
+            # favorite_color = form.changed_data['favorite_color']
+            # print('Birth year : ', type(birth_year), birth_year)
+            # print('Favorite color : ', type(favorite_color), favorite_color)
             print('Subject is : ', subject)
             print('Message is : ', message)
             print('Sender is : ', sender)
             print('CC myself is : ', cc_myself)
+            subject = request.POST['subject']
+            print('Subject value get by request : ', subject)
             return redirect(reverse('polls:contact'))
     else:
         form = ContactForm()
@@ -71,9 +86,12 @@ def upload_file(request):
         if form.is_valid():
             file = request.FILES['file']
             handle_uploaded_file(file)
+            request.session['uploaded_result'] = 'File uploaded successfully!!!'
             return redirect(reverse('polls:upload'))
     else:
+        request.session['uploaded_result'] = 'Upload File'
         form = UploadFileForm()
+    print('Request session value is : ', request.session['uploaded_result'])
     return render(request, 'polls/upload.html', {'form': form.render('polls/form_template.html')})
 
 def json_resp(request):

@@ -16,5 +16,6 @@ urlpatterns = [
     path('upload/', views.upload_file, name='upload'),
     path('uploads/', views.upload_files, name='uploads'),
     path('contact/', views.contact, name='contact'),
+    path('login/', views.login, name='login'),
     # path('multiple/', views.FileFieldFormView.as_view(), name='multiple_upload'),
 ]
