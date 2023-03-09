@@ -92,7 +92,8 @@ def upload_file(request):
         request.session['uploaded_result'] = 'Upload File'
         form = UploadFileForm()
     print('Request session value is : ', request.session['uploaded_result'])
-    return render(request, 'polls/upload.html', {'form': form.render('polls/form_template.html')})
+    # return render(request, 'polls/upload.html', {'form': form.render('polls/form_template.html')})
+    return render(request, 'polls/upload2.html', {'form': form})
 
 def json_resp(request):
     return JsonResponse({
