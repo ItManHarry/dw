@@ -66,7 +66,7 @@ def contact(request):
             return redirect(reverse('polls:contact'))
     else:
         form = ContactForm()
-    return render(request, 'polls/contact.html', dict(form=form.render('polls/form_template.html')))
+    return render(request, 'polls/contact.html', dict(form=form))
 
 def upload_files(request):
     if request.method == 'POST':

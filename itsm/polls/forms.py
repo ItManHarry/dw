@@ -25,8 +25,9 @@ class ContactForm(forms.Form):
         ('yellow', 'YELLOW'),
     ]
     CHOICES = [('1', 'YES'), ('2', 'NO')]
+    id = forms.CharField(widget=forms.HiddenInput(), initial='123456')
     choice = forms.ChoiceField(label='选择', widget=forms.RadioSelect, choices=CHOICES)
-    birth_year = forms.DateField(label='生日', widget=forms.SelectDateWidget(years=BIRTH_YEAR))
+    birth_year = forms.DateField(label='生日', widget=forms.SelectDateWidget(years=BIRTH_YEAR, attrs={'class': 'form-control'}))
     favorite_color = forms.MultipleChoiceField(label='颜色爱好', required=False, widget=forms.CheckboxSelectMultiple(), choices=COLOR_FOR_CHOICE)
     subject = forms.CharField(label='主题', max_length=128, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': '邮件主题'}))
     message = forms.CharField(label='消息', widget=forms.Textarea(attrs={'class': 'form-control'}))
