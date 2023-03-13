@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+</head>
+<body>
+  <h2>{{title}}</h2>
+  <form method="post">
+      {% csrf_token %}
+      {{form}}
+      <button type="submit">Submit</button>&nbsp;&nbsp;<a href="{%url 'mfms:author_index'%}">Index</a>
+  </form>
+</body>
+</html>

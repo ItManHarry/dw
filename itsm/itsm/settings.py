@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'aggr.apps.AggrConfig',
     'dbms.apps.DbmsConfig',
     'frms.apps.FrmsConfig',
+    'mfms.apps.MfmsConfig',
 ]
 
 MIDDLEWARE = [

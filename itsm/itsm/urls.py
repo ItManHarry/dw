@@ -23,5 +23,6 @@ urlpatterns = [
     # App中定义namespace
     path('polls/', include('polls.urls')),
     path('comm/', include('comm.urls')),
-    path('frms/', include('frms.urls'))
+    path('frms/', include('frms.urls')),
+    path('mfms/', include('mfms.urls')),
 ]

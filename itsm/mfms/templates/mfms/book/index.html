@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Index Page</title>
+</head>
+<body>
+    <h2>Book Index Page!</h2>
+    <a href="{%url 'mfms:book_add'%}">Add</a><br><br>
+    <table width="100%" border="1" cellpadding="0" cellspacing="0">
+        <tr>
+            <th>Name</th>
+            <th>Author(s)</th>
+            <th>Action</th>
+        </tr>
+        {%for book in books%}
+        <tr>
+            <td>{{book.name}}</td>
+            <td>
+                {%for author in book.get_authors%}
+                {{author}}&nbsp;&nbsp;
+                {%endfor%}
+            </td>
+            <td>
+                <a href="{%url 'mfms:author_edit' book.id%}">Edit</a>
+            </td>
+        </tr>
+        {%endfor%}
+    </table>
+</body>
+</html>
