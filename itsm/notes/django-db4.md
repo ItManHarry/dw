@@ -167,3 +167,60 @@ def index(request):
     </div>
 {% endfor %}
 ```
+### Formsets
+- class BaseFormSet
+> A formset is a layer of abstraction to work with multiple forms on the same page. It can be best compared to a data grid. Let’s say you have the following form:
+```bazaar
+>>> from django import forms
+>>> class ArticleForm(forms.Form):
+...     title = forms.CharField()
+...     pub_date = forms.DateField()
+```
+> You might want to allow the user to create several articles at once. To create a formset out of an ArticleForm you would do:
+```bazaar
+>>> from django.forms import formset_factory
+>>> ArticleFormSet = formset_factory(ArticleForm)
+```
+> As you can see it only displayed one empty form. The number of empty forms that is displayed is controlled by the extra parameter. By default, formset_factory() defines one extra form; the following example will create a formset class to display two blank forms:
+```bazaar
+>>> ArticleFormSet = formset_factory(ArticleForm, extra=2)
+```
+- Using initial data with a formset
+```bazaar
+>>> import datetime
+>>> from django.forms import formset_factory
+>>> from myapp.forms import ArticleForm
+>>> ArticleFormSet = formset_factory(ArticleForm, extra=2)
+>>> formset = ArticleFormSet(initial=[
+...     {'title': 'Django is now open source',
+...      'pub_date': datetime.date.today(),}
+... ])
+```
+> There are now a total of three forms showing above. One for the initial data that was passed in and two extra forms. Also note that we are passing in a list of dictionaries as the initial data.
+- Limiting the maximum number of forms
+> The max_num parameter to formset_factory() gives you the ability to limit the number of forms the formset will display:
+```bazaar
+>>> from django.forms import formset_factory
+>>> from myapp.forms import ArticleForm
+>>> ArticleFormSet = formset_factory(ArticleForm, extra=2, max_num=1)
+>>> formset = ArticleFormSet()
+```
+- Limiting the maximum number of instantiated forms
+> The absolute_max parameter to formset_factory() allows limiting the number of forms that can be instantiated when supplying POST data. This protects against memory exhaustion attacks using forged POST requests:
+```bazaar
+>>> from django.forms.formsets import formset_factory
+>>> from myapp.forms import ArticleForm
+>>> ArticleFormSet = formset_factory(ArticleForm, absolute_max=1500)
+>>> data = {
+...     'form-TOTAL_FORMS': '1501',
+...     'form-INITIAL_FORMS': '0',
+... }
+>>> formset = ArticleFormSet(data)
+>>> len(formset.forms)
+1500
+>>> formset.is_valid()
+False
+>>> formset.non_form_errors()
+['Please submit at most 1000 forms.']
+```
+> When absolute_max is None, it defaults to max_num + 1000. (If max_num is None, it defaults to 2000).
