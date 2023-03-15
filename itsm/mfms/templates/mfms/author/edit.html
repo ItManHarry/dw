@@ -1,15 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
+{%load static%}
 <head>
     <meta charset="UTF-8">
     <title>{{title}}</title>
+    <link rel="icon" type="image/x-icon" href="{%static 'images/icon/sys.ico'%}">
+    <link rel="stylesheet" type="text/css" href="{%static 'css/bootstrap.min.css'%}">
+    <link rel="stylesheet" type="text/css" href="{%static 'css/bootstrap-icons.css'%}">
+    <link rel="stylesheet" type="text/css" href="{%static 'css/jquery-confirm.min.css'%}">
 </head>
 <body>
-  <h2>{{title}}</h2>
-  <form method="post">
-      {% csrf_token %}
-      {{form}}
-      <button type="submit">Submit</button>&nbsp;&nbsp;<a href="{%url 'mfms:author_index'%}">Index</a>
-  </form>
+<div class="container">
+    <h2>{{title}}</h2>
+    <hr>
+    <form method="post">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-4">
+                {{form.name.label_tag}}
+                {{form.name}}
+                <div id="id_name" class="form-text">请输入作者姓名.</div>
+            </div>
+            <div class="col-4">
+                {{form.title.label_tag}}
+                {{form.title}}
+                <div id="id_title" class="form-text">请选择作者称谓.</div>
+            </div>
+            <div class="col-4">
+                {{form.birth_date.label_tag}}
+                {{form.birth_date}}
+                <div id="id_birth_date" class="form-text">请输入作者生日(格式:YYYY-MM-DD).</div>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col text-end">
+                <button type="submit" class="btn btn-primary">Submit</button>&nbsp;&nbsp;
+                <a class="btn btn-outline-secondary" href="{%url 'mfms:author_index'%}">Index</a>
+            </div>
+        </div>
+        <hr>
+    </form>
+</div>
+<script type="text/javascript" src="{%static 'js/jquery-3.6.1.min.js'%}"></script>
+<script type="text/javascript" src="{%static 'js/bootstrap.bundle.min.js'%}"></script>
+<script type="text/javascript" src="{%static 'js/jquery-confirm.min.js'%}"></script>
+<script>
+    $(function(){
+       //alert('OK')
+    })
+</script>
 </body>
 </html>

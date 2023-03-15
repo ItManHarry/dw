@@ -14,7 +14,7 @@ def author_add(request):
             return redirect(reverse('mfms:author_add'))
     else:
         form = AuthorForm()
-    return render(request, 'mfms/author/edit.html', context=dict(form=form, title='Add author'))
+    return render(request, 'mfms/author/edit.html', context=dict(form=form, title='新增作者'))
 def author_edit(request, id):
     author = Author.objects.get(pk=id)
     if request.method == 'POST':
@@ -24,7 +24,7 @@ def author_edit(request, id):
             return redirect(reverse('mfms:author_edit', args=(id,)))
     else:
         form = AuthorForm(instance=author)
-    return render(request, 'mfms/author/edit.html', context=dict(form=form, title='Edit author'))
+    return render(request, 'mfms/author/edit.html', context=dict(form=form, title='编辑作者'))
 def book_index(request):
     books = Book.objects.all()
     for book in books:
@@ -39,4 +39,4 @@ def book_add(request):
             return redirect(reverse('mfms:book_add'))
     else:
         form = BookForm()
-    return render(request, 'mfms/book/edit.html', context=dict(form=form, title='Add book'))
+    return render(request, 'mfms/book/edit.html', context=dict(form=form, title='新增图书'))

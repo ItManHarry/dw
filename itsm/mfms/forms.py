@@ -12,12 +12,14 @@ class AuthorForm(ModelForm):
         model = Author
         fields = ['name', 'title', 'birth_date']
         labels = {
-            'title': '称呼',
+            'title': '称谓',
             'name': '姓名',
             'birth_date': '生日',
         }
         widgets = {
-            'birth_date': CalendarWidget
+            'title': forms.Select(attrs={'class': 'form-control'}),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'birth_date': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
 class BookForm(ModelForm):
