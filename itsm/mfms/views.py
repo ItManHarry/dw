@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect, reverse
 from .forms import AuthorForm, BookForm
 from .models import Author, Book
+from django.views.generic import TemplateView
+from django.views import View
+from django.http import HttpResponse
 def index(request):
     return render(request, 'mfms/index.html', context=dict(name='Harry'))
 def author_index(request):
@@ -40,3 +43,11 @@ def book_add(request):
     else:
         form = BookForm()
     return render(request, 'mfms/book/edit.html', context=dict(form=form, title='新增图书'))
+class AuthorIndexView(TemplateView):
+    extra_context = dict(authors=Author.objects.all())
+    template_name = 'mfms/author/index.html'
+class GreetingView(View):
+    greeting = 'Good Day'
+
+    def get(self, request):
+        return HttpResponse('<h1>'+self.greeting+'</h1>')
