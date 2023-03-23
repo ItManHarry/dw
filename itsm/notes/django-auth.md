@@ -87,3 +87,51 @@ def logout_view(request):
     logout(request)
     # Redirect to a success page.
 ```
+## Limiting access to logged-in users
+> The raw way to limit access to pages is to check request.user.is_authenticated and either redirect to a login page:
+```bazaar
+from django.conf import settings
+from django.shortcuts import redirect
+
+def my_view(request):
+    if not request.user.is_authenticated:
+        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+    # ...
+```
+> The login_required decorator
+```bazaar
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def my_view(request):
+    ...
+```
+## The LoginRequiredMixin mixin
+> When using class-based views, you can achieve the same behavior as with login_required by using the LoginRequiredMixin. This mixin should be at the leftmost position in the inheritance list.
+```bazaar
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+class MyView(LoginRequiredMixin, View):
+    login_url = '/login/'
+    redirect_field_name = 'redirect_to'
+```
+## The permission_required decorator
+> It’s a relatively common task to check whether a user has a particular permission. For that reason, Django provides a shortcut for that case: the permission_required() decorator.:
+```bazaar
+from django.contrib.auth.decorators import permission_required
+
+@permission_required('polls.add_choice')
+def my_view(request):
+    ...
+```
+> Just like the has_perm() method, permission names take the form "<app label>.<permission codename>" (i.e. polls.add_choice for a permission on a model in the polls application).
+## The PermissionRequiredMixin mixin
+> To apply permission checks to class-based views, you can use the PermissionRequiredMixin:
+```bazaar
+from django.contrib.auth.mixins import PermissionRequiredMixin
+
+class MyView(PermissionRequiredMixin, View):
+    permission_required = 'polls.add_choice'
+    # Or multiple of permissions:
+    permission_required = ('polls.view_choice', 'polls.change_choice')
+```
