@@ -135,3 +135,33 @@ class MyView(PermissionRequiredMixin, View):
     # Or multiple of permissions:
     permission_required = ('polls.view_choice', 'polls.change_choice')
 ```
+## Password management in Django
+### Password validation
+> By default, validators are used in the forms to reset or change passwords and in the createsuperuser and changepassword management commands. Validators aren’t applied at the model level, for example in User.objects.create_user() and create_superuser(), because we assume that developers, not users, interact with Django at that level and also because model validation doesn’t automatically run as part of creating models.
+- Enabling password validation
+> Password validation is configured in the AUTH_PASSWORD_VALIDATORS setting:
+```
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 9,
+        }
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
+```
+> This example enables all four included validators:
+1. **UserAttributeSimilarityValidator**, which checks the similarity between the password and a set of attributes of the user.
+2. **MinimumLengthValidator**, which checks whether the password meets a minimum length. This validator is configured with a custom option: it now requires the minimum length to be nine characters, instead of the default eight.
+3. **CommonPasswordValidator**, which checks whether the password occurs in a list of common passwords. By default, it compares to an included list of 20,000 common passwords.
+4. **NumericPasswordValidator**, which checks whether the password isn’t entirely numeric.
+
