@@ -17,7 +17,7 @@ pip install django -i https://pypi.tuna.tsinghua.edu.cn/simple
 ### Django Basic
 1. 创建工程：
 ```bazaar
-django-admin startprojects project-name
+django-admin startproject project-name
 ```
 2. 工程文件目录
 
